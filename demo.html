@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我们的故事 · 从2024到现在</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        overflow-x: hidden;
+        background: #000;
+        color: #fff;
+      }
+
+      .timeline-container {
+        position: relative;
+        width: 100%;
+      }
+
+      .timeline-section {
+        height: 100vh;
+        width: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1.2s ease, transform 1.5s ease;
+        transform: scale(1.15);
+      }
+
+      .timeline-section.active .background-image {
+        opacity: 0.35;
+        transform: scale(1);
+      }
+
+      .timeline-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 50px;
+        max-width: 900px;
+        opacity: 0;
+        transform: translateY(60px);
+        transition: all 1s ease;
+        transition-delay: 0.3s;
+      }
+
+      .timeline-section.active .timeline-content {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .date {
+        font-size: 28px;
+        font-weight: 300;
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.7);
+        letter-spacing: 2px;
+      }
+
+      .title {
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #fff 0%, #ffd6e8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+      }
+
+      .description {
+        font-size: 22px;
+        line-height: 2;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .timeline-line {
+        position: fixed;
+        left: 50%;
+        top: 0;
+        width: 3px;
+        height: 100vh;
+        background: linear-gradient(
+          to bottom,
+          transparent 0%,
+          rgba(255, 214, 232, 0.3) 10%,
+          rgba(255, 214, 232, 0.8) 50%,
+          rgba(255, 214, 232, 0.3) 90%,
+          transparent 100%
+        );
+        z-index: 5;
+        transform: translateX(-50%);
+      }
+
+      .timeline-dot {
+        position: absolute;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border: 4px solid #ffd6e8;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 15;
+        box-shadow: 0 0 15px rgba(255, 214, 232, 0.6);
+        transition: all 0.4s ease;
+      }
+
+      .timeline-section.active .timeline-dot {
+        width: 24px;
+        height: 24px;
+        background: #ffd6e8;
+        box-shadow: 0 0 35px rgba(255, 214, 232, 1),
+          0 0 50px rgba(255, 182, 217, 0.5);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+      }
+
+      .scroll-hint {
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        animation: bounce 2s infinite;
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 1px;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        40% {
+          transform: translateX(-50%) translateY(-12px);
+        }
+        60% {
+          transform: translateX(-50%) translateY(-6px);
+        }
+      }
+
+      .heart {
+        position: absolute;
+        color: #ffd6e8;
+        font-size: 24px;
+        opacity: 0;
+        animation: float 3.5s ease-in-out;
+        pointer-events: none;
+      }
+
+      @keyframes float {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(0) rotate(0deg);
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(-120px) scale(1.2) rotate(180deg);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-250px) scale(0.3) rotate(360deg);
+        }
+      }
+
+      .section-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          transparent 0%,
+          rgba(0, 0, 0, 0.4) 50%,
+          rgba(0, 0, 0, 0.8) 100%
+        );
+        z-index: 8;
+      }
+
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd6e8, #ffb6d9, #ffd6e8);
+        z-index: 100;
+        transition: width 0.3s ease;
+      }
+
+      /* 开场动画 */
+      .intro-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        animation: fadeOut 1s ease 2s forwards;
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+
+      .intro-text {
+        font-size: 56px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #fff 0%, #ffd6e8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: introSlide 1s ease;
+      }
+
+      .intro-subtitle {
+        font-size: 24px;
+        color: rgba(255, 255, 255, 0.9);
+        animation: introSlide 1s ease 0.3s backwards;
+      }
+
+      @keyframes introSlide {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="intro-screen">
+      <div class="intro-text">我们的故事</div>
+      <div class="intro-subtitle">从2024到现在 · 每一步都有你</div>
+    </div>
+
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="timeline-line"></div>
+    <div class="scroll-hint">↓ 向下滚动，开启我们的时光之旅 ↓</div>
+
+    <div class="timeline-container" id="timelineContainer"></div>
+
+    <script>
+      const timelineData = [
+        {
+          date: "2024年5月",
+          title: "初见・心动的开始",
+          description:
+            "我们悄悄地、温柔地走进了彼此的生活。那时候我们都有点腼腆，每一次见面都像小鹿乱撞。虽然白天都在忙各自的事情，但晚上只要能在一起，就觉得一天的疲惫都被治愈了。",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        },
+        {
+          date: "2024年6月",
+          title: "第一次争吵・更懂彼此",
+          description:
+            "我们第一次发生争吵。只是因为相处时间太短、都太想见到彼此，所以一点点小情绪都变得更敏感。但正是那次争吵，我们学会了更真诚地表达，也更勇敢地走进对方的心里。从那之后，我们不再疏离，反而越发黏在一起。",
+          background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+        },
+        {
+          date: "2024年6月",
+          title: "生日惊喜・被光照亮的日子",
+          description:
+            "我的生日那天，你像光一样出现，把我的生日点亮成了一个永远记得的瞬间。你准备的小惊喜、你的陪伴、你的笑容，比任何礼物都珍贵。",
+          background: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+        },
+        {
+          date: "2024年8月",
+          title: "情人节・温柔的风与暖暖的手",
+          description:
+            "暑假时我跑去你家附近找你。那是我们第一次在你生活的地方一起走、一起笑。那天刚好是情人节，街上的风好温柔，你的手好暖，我觉得世界都变得甜甜的。",
+          background: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+        },
+        {
+          date: "2024年10月",
+          title: "并肩努力・软考的日子",
+          description:
+            "我们开始准备软考。一起学习、一起玩闹、一起互相打气。那段时间很累，但因为身边是你，所以充满力量。后来我们一起通过了考试，那一刻真的超级自豪——是属于我们并肩努力的证明。",
+          background: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+        },
+        {
+          date: "2024年12月",
+          title: "跨年烟火・新年的第一秒",
+          description:
+            "我们第一次一起跨年。街上人很多，但我只记得你握着我的手，倒数的瞬间你在我身边。和你一起迎接新的一年，那一秒的幸福感满到溢出来。",
+          background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+        },
+        {
+          date: "2025年2月",
+          title: "广州旅行・想去更多地方",
+          description:
+            "我们一起去了广州。吃好吃的、走很多路、看夜景、拍好多好多照片。那次旅行让我更确定：未来我想和你去更多地方。",
+          background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+        },
+        {
+          date: "2025年5月",
+          title: "平潭的海风・珍惜的旅程",
+          description:
+            "我们一起去了平潭。海风、蓝天、海岸线，还有你。风吹乱头发却吹不散快乐，我们都笑得特别开心。那是我至今都很珍惜的一段旅程。",
+          background: "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
+        },
+        {
+          date: "2025年6月",
+          title: "异地实习・距离拉不开的心",
+          description:
+            "这是我们第一次相隔比较远。虽然我在广州、你在学校，但我们依然每天联系、分享生活。距离没有让我们变淡，反而更坚定了想要奔向彼此的心。",
+          background: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
+        },
+        {
+          date: "2025年7月",
+          title: "同居生活・最甜的时光",
+          description:
+            '你来到我所在的城市，我们终于可以真正地"一起生活"了！一起做饭、一起追剧、一起吵吵闹闹、一起解决问题。虽然中间也有不少争执，但每一次最终都变成了更理解、更珍惜对方的理由。',
+          background: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+        },
+        {
+          date: "2025年11月",
+          title: "杭州・新的阶段，依然是你",
+          description:
+            "我们一起来到杭州开启新的阶段。虽然工作很忙，平时也只能周末见，但每一次的见面都变得更有意义。只要你在，一个周末就能抵过一周的辛苦。",
+          background: "linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)",
+        },
+        {
+          date: "未来",
+          title: "每一步都有你・都很幸福",
+          description:
+            "这一路，我们从腼腆到熟悉，从争吵到拥抱，从分开到同居，从校园到城市。每一步都走得不容易，但每一步都有你，都很幸福。未来还有更多的故事等着我们一起去写。",
+          background: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+        },
+      ];
+
+      const container = document.getElementById("timelineContainer");
+
+      // 创建时间节点
+      timelineData.forEach((data, index) => {
+        const section = document.createElement("div");
+        section.className = "timeline-section";
+        section.innerHTML = `
+                <div class="background-image" style="background: ${data.background}"></div>
+                <div class="section-overlay"></div>
+                <div class="timeline-dot" style="top: 50%;"></div>
+                <div class="timeline-content">
+                    <div class="date">${data.date}</div>
+                    <div class="title">${data.title}</div>
+                    <div class="description">${data.description}</div>
+                </div>
+            `;
+        container.appendChild(section);
+      });
+
+      // 滚动监听
+      const sections = document.querySelectorAll(".timeline-section");
+      const progressBar = document.getElementById("progressBar");
+
+      function checkScroll() {
+        const scrollPos = window.scrollY + window.innerHeight / 2;
+        const totalHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        progressBar.style.width = progress + "%";
+
+        sections.forEach((section, index) => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+
+          if (
+            scrollPos >= sectionTop &&
+            scrollPos < sectionTop + sectionHeight
+          ) {
+            section.classList.add("active");
+            if (Math.random() > 0.7) {
+              createHearts(section);
+            }
+          } else {
+            section.classList.remove("active");
+          }
+        });
+      }
+
+      // 创建飘浮的爱心
+      let lastHeartTime = 0;
+      function createHearts(section) {
+        const now = Date.now();
+        if (now - lastHeartTime < 800) return;
+        lastHeartTime = now;
+
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerHTML = "♥";
+            heart.style.left = 20 + Math.random() * 60 + "%";
+            heart.style.top = "70%";
+            heart.style.animationDelay = Math.random() * 0.5 + "s";
+            section.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 3500);
+          }, i * 200);
+        }
+      }
+
+      window.addEventListener("scroll", checkScroll);
+      window.addEventListener("load", checkScroll);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        checkScroll();
+      });
+    </script>
+  </body>
+</html>
