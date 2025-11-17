@@ -8,4 +8,10 @@
 import { ref, onMounted } from "vue";
 </script>
 
-<style scoped></style>
+<style>
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+</style>
