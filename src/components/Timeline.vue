@@ -1,5 +1,8 @@
 <template>
   <div class="timeline-wrapper">
+    <!-- 返回按钮 -->
+    <div class="back-button" @click="onBack">← 返回</div>
+
     <!-- 开场动画 -->
     <div class="intro-screen">
       <div class="intro-text">我们的故事</div>
@@ -57,21 +60,34 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import timelineDataRaw from "../data/timeline.json";
+import { useRouter } from "vue-router";
 
-// 时间轴数据（从 JSON 导入）
+const router = useRouter();
+// 时间轴数据
 const timelineData = ref(timelineDataRaw);
 
-// 响应式状态
+// 状态
 const activeIndex = ref(-1);
 const progress = ref(0);
 const hearts = ref([]);
 const containerRef = ref(null);
 const sectionRefs = ref([]);
 
-// 爱心ID计数器
+// 爱心相关
 let heartId = 0;
 let lastHeartTime = 0;
 
+// 自动滚动相关
+let autoScrollTimer = null;
+let userInteractionTimer = null;
+let isAutoScrolling = false;
+const AUTO_SCROLL_DELAY = 3000;
+const AUTO_SCROLL_SPEED = 0.5;
+
+// 返回主页
+const onBack = () => {
+  router.push({ name: "Home", params: { show: false } });
+};
 // 创建爱心
 const createHearts = (sectionIndex) => {
   const now = Date.now();
@@ -89,15 +105,50 @@ const createHearts = (sectionIndex) => {
       };
       hearts.value.push(heart);
 
-      // 3.5秒后移除爱心
       setTimeout(() => {
         const index = hearts.value.findIndex((h) => h.id === heart.id);
-        if (index > -1) {
-          hearts.value.splice(index, 1);
-        }
+        if (index > -1) hearts.value.splice(index, 1);
       }, 3500);
     }, i * 200);
   }
+};
+
+// 自动滚动
+const startAutoScroll = () => {
+  if (autoScrollTimer) return;
+
+  isAutoScrolling = true;
+  autoScrollTimer = setInterval(() => {
+    const maxScroll =
+      document.documentElement.scrollHeight - window.innerHeight;
+
+    if (window.scrollY >= maxScroll) {
+      stopAutoScroll();
+      return;
+    }
+
+    window.scrollBy({
+      top: AUTO_SCROLL_SPEED,
+      behavior: "auto",
+    });
+  }, 8);
+};
+
+const stopAutoScroll = () => {
+  if (autoScrollTimer) clearInterval(autoScrollTimer);
+  autoScrollTimer = null;
+  isAutoScrolling = false;
+};
+
+// 重置交互倒计时
+const resetUserInteraction = () => {
+  stopAutoScroll();
+
+  if (userInteractionTimer) clearTimeout(userInteractionTimer);
+
+  userInteractionTimer = setTimeout(() => {
+    startAutoScroll();
+  }, AUTO_SCROLL_DELAY);
 };
 
 // 滚动处理
@@ -105,35 +156,52 @@ const handleScroll = () => {
   const scrollPos = window.scrollY + window.innerHeight / 2;
   const totalHeight =
     document.documentElement.scrollHeight - window.innerHeight;
+
   progress.value = (window.scrollY / totalHeight) * 100;
 
   sectionRefs.value.forEach((section, index) => {
     if (!section) return;
-
     const sectionTop = section.offsetTop;
     const sectionHeight = section.offsetHeight;
 
     if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
       if (activeIndex.value !== index) {
         activeIndex.value = index;
-        if (Math.random() > 0.7) {
-          createHearts(index);
-        }
+        if (Math.random() > 0.7) createHearts(index);
       }
     }
   });
+
+  if (!isAutoScrolling) resetUserInteraction();
 };
 
-// 生命周期
+// 用户交互检测
+const handleUserInteraction = () => {
+  resetUserInteraction();
+};
+
 onMounted(() => {
   nextTick(() => {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("wheel", handleUserInteraction);
+    window.addEventListener("touchstart", handleUserInteraction);
+    window.addEventListener("keydown", handleUserInteraction);
+    window.addEventListener("mousemove", handleUserInteraction);
+
+    resetUserInteraction();
   });
 });
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("wheel", handleUserInteraction);
+  window.removeEventListener("touchstart", handleUserInteraction);
+  window.removeEventListener("keydown", handleUserInteraction);
+  window.removeEventListener("mousemove", handleUserInteraction);
+
+  stopAutoScroll();
+  if (userInteractionTimer) clearTimeout(userInteractionTimer);
 });
 </script>
 
@@ -357,7 +425,7 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -398,5 +466,26 @@ onUnmounted(() => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.back-button {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-5px);
 }
 </style>
