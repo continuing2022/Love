@@ -1,36 +1,7 @@
 <template>
   <div class="home">
-    <!-- 欢迎屏幕 -->
-    <div v-if="showWelcome" class="welcome-screen">
-      <div class="welcome-content">
-        <div class="love-letter">
-          <div class="letter-header">致我最爱的人</div>
-          <div class="letter-body">
-            <p class="letter-line">当我遇见你的那一刻</p>
-            <p class="letter-line">世界突然变得色彩斑斓</p>
-            <p class="letter-line">每一天都是新的开始</p>
-            <p class="letter-line">每一刻都值得珍藏</p>
-          </div>
-          <div class="letter-signature">永远爱你的 {{ yourName }}</div>
-        </div>
-        <button class="enter-button" @click="enterSite">
-          <span class="button-text">开启我们的回忆</span>
-          <span class="button-icon">❤️</span>
-        </button>
-      </div>
-      <div class="floating-hearts">
-        <div
-          v-for="i in 15"
-          :key="i"
-          class="floating-heart"
-          :style="getHeartStyle(i)"
-        >
-          ♥
-        </div>
-      </div>
-    </div>
     <!-- 主导航页面 -->
-    <div v-if="!showWelcome" class="main-nav">
+    <div class="main-nav">
       <div class="nav-header">
         <h1 class="site-title">我们的小世界</h1>
         <p class="site-subtitle">记录每一个温暖的瞬间</p>
@@ -103,6 +74,8 @@
         <button class="modal-button" @click="closeModal">好的</button>
       </div>
     </div>
+
+    <!-- 爱的理由组件 -->
     <ReasonLove ref="loveRef" />
   </div>
 </template>
@@ -111,13 +84,12 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import ReasonLove from "./ReasonLove.vue";
-const router = useRouter(); //路由
+
+const router = useRouter();
 const loveRef = ref(null);
 
-const yourName = ref("小明"); // 修改为你的名字
 const startDate = new Date("2024-01-01"); // 修改为你们在一起的日期
 
-const showWelcome = ref(true);
 const showComingSoonModal = ref(false);
 const comingSoonFeature = ref("");
 
@@ -129,14 +101,8 @@ const daysCount = computed(() => {
   return diffDays;
 });
 
-// 进入网站
-const enterSite = () => {
-  showWelcome.value = false;
-};
-
 // 前往时间轴
 const goToTimeline = () => {
-  // 路由跳转到时间轴页面
   router.push({ name: "Timeline" });
 };
 
@@ -146,23 +112,15 @@ const showComingSoon = (feature) => {
   showComingSoonModal.value = true;
 };
 
+// 显示爱的理由弹幕
 const showReasonLove = () => {
-  loveRef.value.startBarrage();
+  // 直接调用子组件的方法
+  loveRef.value?.startBarrage();
 };
+
 // 关闭模态框
 const closeModal = () => {
   showComingSoonModal.value = false;
-};
-
-// 生成随机的心形样式
-const getHeartStyle = (index) => {
-  return {
-    left: `${Math.random() * 100}%`,
-    animationDelay: `${Math.random() * 5}s`,
-    animationDuration: `${8 + Math.random() * 4}s`,
-    fontSize: `${20 + Math.random() * 20}px`,
-    opacity: 0.3 + Math.random() * 0.4,
-  };
 };
 </script>
 
@@ -174,147 +132,7 @@ const getHeartStyle = (index) => {
   font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
 }
 
-/* 欢迎屏幕 */
-.welcome-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  overflow: hidden;
-}
-
-.welcome-content {
-  text-align: center;
-  z-index: 2;
-  animation: fadeInUp 1s ease;
-}
-
-.love-letter {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 50px 60px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 500px;
-  margin: 0 auto 40px;
-  animation: letterOpen 1s ease;
-}
-
-.letter-header {
-  font-size: 28px;
-  font-weight: bold;
-  color: #764ba2;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #764ba2;
-  padding-bottom: 15px;
-}
-
-.letter-body {
-  margin: 30px 0;
-}
-
-.letter-line {
-  font-size: 18px;
-  color: #333;
-  margin: 15px 0;
-  line-height: 1.8;
-  animation: fadeIn 1s ease;
-  animation-fill-mode: backwards;
-}
-
-.letter-line:nth-child(1) {
-  animation-delay: 0.5s;
-}
-.letter-line:nth-child(2) {
-  animation-delay: 0.8s;
-}
-.letter-line:nth-child(3) {
-  animation-delay: 1.1s;
-}
-.letter-line:nth-child(4) {
-  animation-delay: 1.4s;
-}
-
-.letter-signature {
-  font-size: 20px;
-  color: #764ba2;
-  font-style: italic;
-  margin-top: 30px;
-  text-align: right;
-}
-
-.enter-button {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  border: none;
-  padding: 18px 50px;
-  font-size: 20px;
-  color: white;
-  border-radius: 50px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 auto;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
-  animation: pulse 2s ease infinite;
-}
-
-.enter-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
-}
-
-.button-icon {
-  font-size: 24px;
-  animation: heartbeat 1.5s ease infinite;
-}
-
-.floating-hearts {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.floating-heart {
-  position: absolute;
-  color: rgba(255, 255, 255, 0.6);
-  animation: floatUp 10s linear infinite;
-}
-
-@keyframes floatUp {
-  0% {
-    bottom: -10%;
-    transform: translateX(0) rotate(0deg);
-  }
-  50% {
-    transform: translateX(20px) rotate(180deg);
-  }
-  100% {
-    bottom: 110%;
-    transform: translateX(0) rotate(360deg);
-  }
-}
-
-@keyframes letterOpen {
-  0% {
-    transform: scale(0.8) rotateX(-90deg);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1) rotateX(0deg);
-    opacity: 1;
-  }
-}
+/* 欢迎屏幕 样式已移除 */
 
 @keyframes fadeInUp {
   from {
