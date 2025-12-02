@@ -73,8 +73,8 @@ const startBarrage = () => {
   let delay = 800;
   const minDelay = 100;
   const maxDelay = 800;
-  const speedUpPoint = 30;
-  const slowDownPoint = 80;
+  const speedUpPoint = 10;
+  const slowDownPoint = 90;
 
   const addMessage = () => {
     if (index < reasons.length) {
