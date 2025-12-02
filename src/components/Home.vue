@@ -127,12 +127,38 @@ const closeModal = () => {
 <style scoped>
 .home {
   min-height: 100vh;
-  background: #000;
+  background: linear-gradient(135deg, #ffb3d9 0%, #ff85c1 50%, #ffa6d5 100%);
   color: #fff;
   font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
-/* 欢迎屏幕 样式已移除 */
+/* 添加可爱的背景装饰 */
+.home::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.15) 1px,
+      transparent 1px
+    ),
+    radial-gradient(circle, rgba(255, 182, 193, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px, 80px 80px;
+  background-position: 0 0, 40px 40px;
+  animation: float 20s linear infinite;
+}
+
+@keyframes float {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-50px, -50px);
+  }
+}
 
 @keyframes fadeInUp {
   from {
@@ -157,54 +183,57 @@ const closeModal = () => {
 /* 主导航页面 */
 .main-nav {
   min-height: 100vh;
-  padding: 80px 20px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 60px 20px 80px;
+  position: relative;
+  z-index: 1;
 }
 
 .nav-header {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   animation: fadeInUp 1s ease;
 }
 
 .site-title {
   font-size: 56px;
   font-weight: bold;
-  background: linear-gradient(135deg, #fff 0%, #ffd6e8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 20px;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(255, 182, 193, 0.5),
+    0 0 30px rgba(255, 182, 193, 0.3);
+  margin-bottom: 15px;
+  letter-spacing: 2px;
 }
 
 .site-subtitle {
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 2px;
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 3px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .nav-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  gap: 25px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 .nav-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 40px 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid transparent;
+  border-radius: 25px;
+  padding: 45px 30px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   animation: fadeInUp 0.8s ease;
   animation-fill-mode: backwards;
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.15),
+    0 0 0 1px rgba(255, 182, 193, 0.1);
 }
 
 .nav-card:nth-child(1) {
@@ -227,9 +256,11 @@ const closeModal = () => {
 }
 
 .nav-card:hover {
-  transform: translateY(-10px);
-  border-color: rgba(255, 214, 232, 0.5);
-  box-shadow: 0 20px 40px rgba(255, 214, 232, 0.3);
+  transform: translateY(-12px) scale(1.02);
+  border-color: #ffb3d9;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(255, 105, 180, 0.35),
+    0 0 0 3px rgba(255, 182, 193, 0.5);
 }
 
 .card-hover-effect {
@@ -241,10 +272,10 @@ const closeModal = () => {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(255, 182, 193, 0.2),
     transparent
   );
-  transition: left 0.5s ease;
+  transition: left 0.6s ease;
 }
 
 .nav-card:hover .card-hover-effect {
@@ -252,52 +283,88 @@ const closeModal = () => {
 }
 
 .card-icon {
-  font-size: 64px;
+  font-size: 72px;
   margin-bottom: 20px;
-  filter: drop-shadow(0 5px 15px rgba(255, 214, 232, 0.5));
+  filter: drop-shadow(0 4px 12px rgba(255, 105, 180, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.nav-card:hover .card-icon {
+  transform: scale(1.15) rotate(5deg);
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1.15) rotate(5deg) translateY(0);
+  }
+  50% {
+    transform: scale(1.15) rotate(5deg) translateY(-10px);
+  }
 }
 
 .card-title {
   font-size: 28px;
   font-weight: bold;
-  margin-bottom: 15px;
-  color: #fff;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+.nav-card:hover .card-title {
+  transform: scale(1.05);
 }
 
 .card-desc {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #ff69b4;
   line-height: 1.6;
+  font-weight: 500;
 }
 
 /* 爱的计数器 */
 .love-counter {
   text-align: center;
-  margin-top: 80px;
-  padding: 40px;
+  margin-top: 70px;
+  padding: 50px 40px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(255, 105, 180, 0.2);
   animation: fadeInUp 1s ease 0.8s backwards;
 }
 
 .counter-label {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 22px;
+  color: #fff;
   margin-bottom: 20px;
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .counter-value {
-  font-size: 72px;
+  font-size: 80px;
   font-weight: bold;
-  background: linear-gradient(135deg, #ffd6e8 0%, #ffb6d9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #fff;
+  text-shadow: 0 4px 15px rgba(255, 105, 180, 0.5),
+    0 0 40px rgba(255, 182, 193, 0.4);
   margin-bottom: 10px;
-  animation: countUp 2s ease;
+  animation: countUp 2s ease, pulse 2s ease infinite;
 }
 
 .counter-unit {
   font-size: 32px;
-  color: #ffd6e8;
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes countUp {
@@ -311,6 +378,16 @@ const closeModal = () => {
   }
 }
 
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* 时间轴页面 */
 .timeline-page {
   position: relative;
@@ -320,21 +397,23 @@ const closeModal = () => {
   position: fixed;
   top: 30px;
   left: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #ffb3d9;
+  color: #ff69b4;
+  padding: 12px 28px;
   border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
   z-index: 1000;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #fff;
   transform: translateX(-5px);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
 }
 
 /* 模态框 */
@@ -344,7 +423,8 @@ const closeModal = () => {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 105, 180, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -353,83 +433,92 @@ const closeModal = () => {
 }
 
 .modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #fff 0%, #ffeff5 100%);
   padding: 50px 60px;
-  border-radius: 20px;
+  border-radius: 30px;
   text-align: center;
-  max-width: 400px;
-  animation: scaleIn 0.3s ease;
+  max-width: 420px;
+  border: 3px solid #ffb3d9;
+  box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  animation: scaleIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .modal-icon {
-  font-size: 72px;
-  margin-bottom: 20px;
+  font-size: 80px;
+  margin-bottom: 25px;
+  animation: bounce 1s ease infinite;
 }
 
 .modal-title {
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 15px;
-  color: white;
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .modal-text {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 10px;
+  color: #ff69b4;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .modal-subtext {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 30px;
+  color: #ffb3d9;
+  margin-bottom: 35px;
 }
 
 .modal-button {
-  background: white;
-  color: #764ba2;
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  color: white;
   border: none;
-  padding: 12px 40px;
+  padding: 14px 50px;
   border-radius: 25px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
 }
 
 .modal-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
+  box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.7) rotate(-5deg);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
   }
 }
 
-@keyframes heartbeat {
-  0%,
-  100% {
-    transform: scale(1);
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .site-title {
+    font-size: 42px;
   }
-  50% {
-    transform: scale(1.2);
-  }
-}
 
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
+  .site-subtitle {
+    font-size: 18px;
   }
-  50% {
-    transform: scale(1.05);
+
+  .nav-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .counter-value {
+    font-size: 60px;
   }
 }
 </style>
