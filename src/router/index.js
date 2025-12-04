@@ -20,6 +20,11 @@ const routes = [
     name: "Login",
     component: () => import("../components/Login.vue"),
   },
+  {
+    path: "/futurePlan",
+    name: "FuturePlan",
+    component: () => import("../components/FuturePlans.vue"),
+  },
   // no-op
 ];
 

@@ -9,7 +9,7 @@
 
       <div class="nav-grid">
         <!-- 时间轴卡片 -->
-        <div class="nav-card timeline-card" @click="goToTimeline">
+        <div class="nav-card timeline-card" @click="goChangeRoute('Timeline')">
           <div class="card-icon">📅</div>
           <h3 class="card-title">时光之旅</h3>
           <p class="card-desc">回顾我们的每一个重要时刻</p>
@@ -41,7 +41,7 @@
         </div>
 
         <!-- 未来计划卡片 -->
-        <div class="nav-card future-card" @click="showComingSoon('未来计划')">
+        <div class="nav-card future-card" @click="goChangeRoute('FuturePlan')">
           <div class="card-icon">🌟</div>
           <h3 class="card-title">未来憧憬</h3>
           <p class="card-desc">我们想一起做的事</p>
@@ -101,11 +101,6 @@ const daysCount = computed(() => {
   return diffDays;
 });
 
-// 前往时间轴
-const goToTimeline = () => {
-  router.push({ name: "Timeline" });
-};
-
 // 显示即将推出
 const showComingSoon = (feature) => {
   comingSoonFeature.value = feature;
@@ -116,6 +111,10 @@ const showComingSoon = (feature) => {
 const showReasonLove = () => {
   // 直接调用子组件的方法
   loveRef.value?.startBarrage();
+};
+// 跳转到对应页面
+const goChangeRoute = (name) => {
+  router.push({ name: name });
 };
 
 // 关闭模态框

@@ -82,8 +82,8 @@ const shake = ref(false);
 const isLoggedIn = ref(localStorage.getItem("isLoggedIn") === "true");
 
 // 写死的账号密码
-const CORRECT_USERNAME = "111";
-const CORRECT_PASSWORD = "111";
+const CORRECT_USERNAME = "2004.12.3";
+const CORRECT_PASSWORD = "2024.5.5";
 
 // 组件挂载时：如果已登录，直接跳转到主页
 onMounted(() => {
@@ -212,7 +212,7 @@ const handleLogin = () => {
 }
 
 .login-title {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: bold;
   background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
   -webkit-background-clip: text;
