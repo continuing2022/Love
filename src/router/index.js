@@ -25,6 +25,11 @@ const routes = [
     name: "FuturePlan",
     component: () => import("../components/FuturePlans.vue"),
   },
+  {
+    path: "/loveMessages",
+    name: "LoveMessages",
+    component: () => import("../components/LoveMessages.vue"),
+  },
   // no-op
 ];
 

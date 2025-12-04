@@ -169,13 +169,19 @@ defineExpose({ startBarrage });
 
 /* 关闭区域 */
 .close-panel {
+  width: 500px;
+  height: 200px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  border-radius: 16px;
+  background: radial-gradient(circle at center, #ff9a9e, #fad0c4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .close-title {

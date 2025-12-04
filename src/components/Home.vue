@@ -33,7 +33,10 @@
         </div>
 
         <!-- 留言板卡片 -->
-        <div class="nav-card message-card" @click="showComingSoon('留言板')">
+        <div
+          class="nav-card message-card"
+          @click="goChangeRoute('LoveMessages')"
+        >
           <div class="card-icon">💌</div>
           <h3 class="card-title">情话留言</h3>
           <p class="card-desc">写下想对你说的话</p>
