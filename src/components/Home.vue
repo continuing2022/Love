@@ -52,7 +52,7 @@
         </div>
 
         <!-- 音乐盒卡片 -->
-        <div class="nav-card music-card" @click="showComingSoon('音乐盒')">
+        <div class="nav-card music-card" @click="openMusicBox">
           <div class="card-icon">🎵</div>
           <h3 class="card-title">爱的旋律</h3>
           <p class="card-desc">属于我们的歌单</p>
@@ -87,9 +87,13 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import ReasonLove from "./ReasonLove.vue";
+import { useMusic } from "../composables/useMusic";
+import loveMusic from "../assets/music/LoveMusic.mp4";
 
 const router = useRouter();
 const loveRef = ref(null);
+
+const music = useMusic();
 
 const startDate = new Date("2024-01-01"); // 修改为你们在一起的日期
 
@@ -108,6 +112,18 @@ const daysCount = computed(() => {
 const showComingSoon = (feature) => {
   comingSoonFeature.value = feature;
   showComingSoonModal.value = true;
+};
+
+// 打开音乐播放器并设置默认曲目 (文件请放到 public/music/background.mp3)
+const openMusicBox = async () => {
+  const track = {
+    trackSrc: loveMusic,
+    trackTitle: "爱的旋律 - 纯音乐",
+  };
+  music.setTrack(track);
+  music.open(track);
+  // 尝试播放，若被阻止，用户可点击播放按钮
+  await music.play();
 };
 
 // 显示爱的理由弹幕
